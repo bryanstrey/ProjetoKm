@@ -11,6 +11,5 @@ data class KmRegistro(
     val dataHora: String,
     val quantidade: Int
 ) {
-    // Construtor secundário para facilitar criação sem passar id
     constructor(km: Int, dataHora: String, quantidade: Int) : this(0, km, dataHora, quantidade)
 }

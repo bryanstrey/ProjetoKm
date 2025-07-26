@@ -1,13 +1,18 @@
 package com.example.km
 
+import com.example.km.KmRegistro
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class KmAdapter(private val lista: List<KmRegistro>) :
-    RecyclerView.Adapter<KmAdapter.KmViewHolder>() {
+class KmAdapter(private var lista: List<KmRegistro>) : RecyclerView.Adapter<KmAdapter.KmViewHolder>() {
+
+    fun updateData(novaLista: List<KmRegistro>) {
+        lista = novaLista
+        notifyDataSetChanged()
+    }
 
     class KmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtKm: TextView = itemView.findViewById(R.id.txtKm)

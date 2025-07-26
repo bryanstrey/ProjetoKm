@@ -1,11 +1,13 @@
 package com.example.km
 
+import com.example.km.KmRegistro
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.km.databinding.FragmentSecondBinding
 
@@ -13,6 +15,8 @@ class SecondFragment : Fragment() {
 
     private var _binding: FragmentSecondBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: KmViewModel by viewModels({ requireActivity() })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +35,7 @@ class SecondFragment : Fragment() {
             val quantidadeText = binding.editTextQuantidade.text.toString()
 
             if (kmText.isBlank() || dataHoraText.isBlank() || quantidadeText.isBlank()) {
-                Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -43,13 +47,13 @@ class SecondFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val novoRegistro = KmRegistro(km, dataHoraText, quantidade)
+            val novoRegistro = KmRegistro(km = km, dataHora = dataHoraText, quantidade = quantidade)
 
-            // Aqui você pode salvar o registro, enviar para outra tela, etc.
-            // Por enquanto, só vamos voltar para a tela anterior
-            Toast.makeText(context, "Registro salvo: $novoRegistro", Toast.LENGTH_SHORT).show()
+            viewModel.adicionarRegistro(novoRegistro)
 
-            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+            Toast.makeText(context, "Registro salvo", Toast.LENGTH_SHORT).show()
+
+            findNavController().navigateUp()
         }
     }
 

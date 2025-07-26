@@ -1,29 +1,31 @@
-package com.example.km
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
 import com.example.km.databinding.FragmentKmListBinding
+import com.example.km.KmAdapter
+import com.example.km.KmViewModel
+import com.example.km.R
+
 
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentKmListBinding? = null
     private val binding get() = _binding!!
 
-    private val lista = listOf(
-        KmRegistro(100, "2025-07-25 14:00", 2),
-        KmRegistro(150, "2025-07-26 10:30", 5),
-        KmRegistro(200, "2025-07-27 08:00", 3)
-    )
+    private val viewModel: KmViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    private lateinit var adapter: KmAdapter
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentKmListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -31,8 +33,15 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        adapter = KmAdapter(emptyList())
         binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
-        binding.recyclerView.adapter = KmAdapter(lista)
+        binding.recyclerView.adapter = adapter
+
+        lifecycleScope.launch {
+            viewModel.registros.collectLatest { lista ->
+                adapter.updateData(lista)
+            }
+        }
 
         binding.fabAddKm.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)

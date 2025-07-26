@@ -27,8 +27,6 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        // Removido o clique do fab pois o botão foi removido do layout
-        // binding.fab.setOnClickListener { ... }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

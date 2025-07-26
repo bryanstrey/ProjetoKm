@@ -1,3 +1,4 @@
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +16,11 @@ class KmListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val lista = listOf(
-        KmRegistro(100, "2025-07-25 14:00", 2),
-        KmRegistro(150, "2025-07-26 10:30", 5),
-        KmRegistro(200, "2025-07-27 08:00", 3)
+        KmRegistro(id = 1, km = 100, dataHora = "2025-07-25 14:00", quantidade = 2),
+        KmRegistro(id = 2, km = 150, dataHora = "2025-07-26 10:30", quantidade = 5),
+        KmRegistro(id = 3, km = 200, dataHora = "2025-07-27 08:00", quantidade = 3)
     )
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentKmListBinding.inflate(inflater, container, false)
