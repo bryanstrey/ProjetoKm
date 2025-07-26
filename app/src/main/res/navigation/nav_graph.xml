@@ -25,4 +25,11 @@
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/kmListFragment"
+        android:name="com.example.km.KmListFragment"
+        android:label="Lista de KM"
+        tools:layout="@layout/fragment_km_list" />
+
 </navigation>

@@ -1,15 +1,15 @@
-package com.example.km
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.km.KmAdapter
+import com.example.km.KmRegistro
 import com.example.km.databinding.FragmentKmListBinding
 
-class FirstFragment : Fragment() {
+
+class KmListFragment : Fragment() {
 
     private var _binding: FragmentKmListBinding? = null
     private val binding get() = _binding!!
@@ -20,22 +20,16 @@ class FirstFragment : Fragment() {
         KmRegistro(200, "2025-07-27 08:00", 3)
     )
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentKmListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
-        binding.recyclerView.adapter = KmAdapter(lista)
-
-        binding.fabAddKm.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        binding.recyclerView.apply {
+            layoutManager = GridLayoutManager(context, 2)
+            adapter = KmAdapter(lista)
         }
     }
 
