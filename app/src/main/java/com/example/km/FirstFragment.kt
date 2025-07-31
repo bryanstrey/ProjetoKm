@@ -14,6 +14,7 @@ import com.example.km.databinding.FragmentKmListBinding
 import com.example.km.KmAdapter
 import com.example.km.KmViewModel
 import com.example.km.R
+import com.example.km.KmRegistro
 
 
 class FirstFragment : Fragment() {
@@ -33,7 +34,8 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = KmAdapter(emptyList())
+        adapter = KmAdapter(emptyList<KmRegistro>())
+
         binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
         binding.recyclerView.adapter = adapter
 

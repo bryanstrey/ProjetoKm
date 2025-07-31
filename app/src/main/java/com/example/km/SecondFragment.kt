@@ -1,6 +1,5 @@
 package com.example.km
 
-import com.example.km.KmRegistro
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.km.databinding.FragmentSecondBinding
+import com.example.km.KmRegistro
 
 class SecondFragment : Fragment() {
 

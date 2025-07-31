@@ -2,6 +2,7 @@ package com.example.km
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Ignore
 
 @Entity(tableName = "km_registro")
 data class KmRegistro(
@@ -11,6 +12,7 @@ data class KmRegistro(
     val dataHora: String,
     val quantidade: Int
 ) {
-    // Construtor secundário para facilitar criação sem passar id
+    @Ignore // IGNORA esse construtor secundário para Room
     constructor(km: Int, dataHora: String, quantidade: Int) : this(0, km, dataHora, quantidade)
 }
+
