@@ -1,15 +1,17 @@
 package com.example.km
 
-import com.example.km.KmRegistro
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
-class KmViewModel : ViewModel() {
-    private val _registros = MutableStateFlow<List<KmRegistro>>(emptyList())
-    val registros: StateFlow<List<KmRegistro>> = _registros
+class KmViewModel(private val repository: KmRepository) : ViewModel() {
+
+    val registros: Flow<List<KmRegistro>> = repository.registros
 
     fun adicionarRegistro(registro: KmRegistro) {
-        _registros.value = _registros.value + registro
+        viewModelScope.launch {
+            repository.adicionar(registro)
+        }
     }
 }

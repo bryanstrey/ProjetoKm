@@ -1,8 +1,11 @@
+package com.example.km
+
+import com.example.km.KmRegistro
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
-import com.example.km.KmRegistro
+
 
 @Dao
 interface KmRegistroDao {

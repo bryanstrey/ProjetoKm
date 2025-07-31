@@ -1,3 +1,5 @@
+package com.example.km
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,20 +11,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
 import com.example.km.databinding.FragmentKmListBinding
-import com.example.km.KmAdapter
-import com.example.km.KmViewModel
-import com.example.km.R
-import com.example.km.KmRegistro
-
 
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentKmListBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: KmViewModel by viewModels()
+    // ViewModel agora usa o KmViewModelFactory com o application
+    private val viewModel: KmViewModel by viewModels {
+        KmViewModelFactory(requireActivity().application)
+    }
 
     private lateinit var adapter: KmAdapter
 
@@ -34,7 +33,7 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = KmAdapter(emptyList<KmRegistro>())
+        adapter = KmAdapter(emptyList())
 
         binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
         binding.recyclerView.adapter = adapter

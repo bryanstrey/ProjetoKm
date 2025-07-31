@@ -9,14 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.km.databinding.FragmentSecondBinding
-import com.example.km.KmRegistro
 
 class SecondFragment : Fragment() {
 
     private var _binding: FragmentSecondBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: KmViewModel by viewModels({ requireActivity() })
+    // Usa o KmViewModelFactory para acessar o banco corretamente
+    private val viewModel: KmViewModel by viewModels {
+        KmViewModelFactory(requireActivity().application)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
