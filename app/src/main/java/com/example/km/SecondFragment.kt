@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -25,6 +26,9 @@ class SecondFragment : Fragment() {
     private val calendar = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
+    // Lista dos dias da semana
+    private val diasSemana = listOf("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira")
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,6 +39,18 @@ class SecondFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Configura o adapter para o MaterialAutoCompleteTextView
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, diasSemana)
+        binding.autoCompleteDiaSemana.setAdapter(adapter)
+
+        // Seleciona o primeiro dia por padrão (opcional)
+        binding.autoCompleteDiaSemana.setText(diasSemana[0], false)
+
+        // Abre o dropdown quando clicar no campo
+        binding.autoCompleteDiaSemana.setOnClickListener {
+            binding.autoCompleteDiaSemana.showDropDown()
+        }
 
         // Abre DatePicker ao clicar no campo de data
         binding.editTextDataHora.setOnClickListener {
@@ -51,23 +67,23 @@ class SecondFragment : Fragment() {
         val dataText = binding.editTextDataHora.text.toString()
         val localSaidaText = binding.editTextLocalSaida.text.toString()
         val localChegadaText = binding.editTextLocalChegada.text.toString()
-        val diaText = binding.editTextDia.text.toString()
+        val diaSelecionado = binding.autoCompleteDiaSemana.text.toString()
 
-        if (kmText.isBlank() || dataText.isBlank() || localSaidaText.isBlank() || localChegadaText.isBlank() || diaText.isBlank()) {
+        if (kmText.isBlank() || dataText.isBlank() || localSaidaText.isBlank() || localChegadaText.isBlank() || diaSelecionado.isBlank()) {
             Toast.makeText(context, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
             return
         }
 
         val km = kmText.toIntOrNull()
-        val dia = diaText.toIntOrNull()
-
         if (km == null) {
             Toast.makeText(context, "KM deve ser um número válido", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (dia == null || dia !in 1..5) {
-            Toast.makeText(context, "Informe um dia válido entre 1 e 5", Toast.LENGTH_SHORT).show()
+        // Obtem o índice do dia selecionado na lista (1 = Segunda-feira, ...)
+        val dia = diasSemana.indexOf(diaSelecionado) + 1
+        if (dia == 0) {
+            Toast.makeText(context, "Informe um dia válido da semana", Toast.LENGTH_SHORT).show()
             return
         }
 

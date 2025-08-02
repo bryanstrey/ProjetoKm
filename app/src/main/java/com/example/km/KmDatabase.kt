@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.km.KmRegistro
 import com.example.km.KmRegistroDao
 
-@Database(entities = [KmRegistro::class], version = 5, exportSchema = false)
+@Database(entities = [KmRegistro::class], version = 6, exportSchema = false)
 abstract class KmDatabase : RoomDatabase() {
     abstract fun kmRegistroDao(): KmRegistroDao
 

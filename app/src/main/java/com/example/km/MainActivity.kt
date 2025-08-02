@@ -23,10 +23,12 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
+        // Remove o título da ActionBar
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

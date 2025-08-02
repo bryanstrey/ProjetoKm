@@ -48,18 +48,18 @@ class FirstFragment : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
 
-        // Configura spinners de dia
-        val dias = (1..5).map { "Dia $it" }
-        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, dias)
+        // Dias da semana (segunda a sexta)
+        val diasSemana = listOf("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira")
+        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, diasSemana)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerDiaInicio.adapter = spinnerAdapter
         binding.spinnerDiaFim.adapter = spinnerAdapter
 
         // Inicializa seleções padrão
         binding.spinnerDiaInicio.setSelection(0)
-        binding.spinnerDiaFim.setSelection(dias.size - 1)
-        diaInicioSelecionado = 1
-        diaFimSelecionado = 5
+        binding.spinnerDiaFim.setSelection(diasSemana.size - 1)
+        diaInicioSelecionado = 1 // Segunda-feira
+        diaFimSelecionado = 5    // Sexta-feira
 
         binding.spinnerDiaInicio.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -75,7 +75,6 @@ class FirstFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        // DatePickers para data início e fim
         binding.tvDataInicioFiltro.setOnClickListener {
             showDatePicker(isDataInicio = true)
         }
@@ -84,19 +83,17 @@ class FirstFragment : Fragment() {
             showDatePicker(isDataInicio = false)
         }
 
-        // Botão filtrar dias (aplica filtro por dias + intervalo de datas)
         binding.btnFiltrarDias.setOnClickListener {
             aplicarFiltros()
         }
 
-        // Carrega todos dados inicialmente
         carregarDadosSemFiltro()
 
-        // Botão para adicionar novo registro
         binding.fabAddKm.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
     }
+
 
     private fun carregarDadosSemFiltro() {
         lifecycleScope.launch {
@@ -138,13 +135,23 @@ class FirstFragment : Fragment() {
         val totalKm = lista.sumOf { it.km }
         val totalItem = TotalKmItem(totalKm)
 
+        val diasSemanaMap = mapOf(
+            1 to "Segunda-feira",
+            2 to "Terça-feira",
+            3 to "Quarta-feira",
+            4 to "Quinta-feira",
+            5 to "Sexta-feira"
+        )
+
         return listOf(totalItem) + lista
             .groupBy { it.dia }
             .toSortedMap()
             .flatMap { (dia: Int, registros: List<KmRegistro>) ->
-                listOf(DayHeader(dia)) + registros.map { KmItem(it) }
+                val nomeDia = diasSemanaMap[dia] ?: "Dia $dia"
+                listOf(DayHeaderNome(nomeDia)) + registros.map { KmItem(it) }
             }
     }
+
 
 
     private fun showDatePicker(isDataInicio: Boolean) {

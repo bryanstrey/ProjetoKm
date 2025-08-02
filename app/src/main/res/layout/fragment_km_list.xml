@@ -42,18 +42,20 @@
         app:layout_constraintStart_toEndOf="@id/spinnerDiaInicio"/>
 
     <!-- Botão Filtrar -->
+
+    <!-- TextView Data Início para filtro -->
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnFiltrarDias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filtrar Dias"
-        android:textAllCaps="false"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/titleKmList"
-        app:layout_constraintStart_toEndOf="@id/spinnerDiaFim"/>
+        android:text="Filtrar"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toEndOf="@id/spinnerDiaFim"
+        app:layout_constraintTop_toBottomOf="@id/titleKmList" />
 
-    <!-- TextView Data Início para filtro -->
     <TextView
         android:id="@+id/tvDataInicioFiltro"
         android:layout_width="wrap_content"
