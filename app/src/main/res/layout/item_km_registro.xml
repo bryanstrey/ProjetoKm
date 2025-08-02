@@ -33,12 +33,12 @@
             android:textColor="#666" />
 
         <TextView
-            android:id="@+id/txtQuantidade"
-            android:layout_width="wrap_content"
+            android:id="@+id/txtLocal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Itinerário: 5"
+            android:text="De: X → Para: Y"
             android:textSize="14sp"
-            android:textColor="#666" />
+            android:layout_marginTop="4dp" />
 
     </LinearLayout>
 

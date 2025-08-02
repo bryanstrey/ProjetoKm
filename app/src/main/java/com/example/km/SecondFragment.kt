@@ -49,10 +49,11 @@ class SecondFragment : Fragment() {
     private fun salvarRegistro() {
         val kmText = binding.editTextKm.text.toString()
         val dataText = binding.editTextDataHora.text.toString()
-        val quantidadeText = binding.editTextQuantidade.text.toString()
-        val diaText = binding.editTextDia.text.toString()  // novo campo dia
+        val localSaidaText = binding.editTextLocalSaida.text.toString()
+        val localChegadaText = binding.editTextLocalChegada.text.toString()
+        val diaText = binding.editTextDia.text.toString()
 
-        if (kmText.isBlank() || dataText.isBlank() || quantidadeText.isBlank() || diaText.isBlank()) {
+        if (kmText.isBlank() || dataText.isBlank() || localSaidaText.isBlank() || localChegadaText.isBlank() || diaText.isBlank()) {
             Toast.makeText(context, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
             return
         }
@@ -70,8 +71,13 @@ class SecondFragment : Fragment() {
             return
         }
 
-        // Aqui passamos quantidadeText direto, porque é String agora
-        val novoRegistro = KmRegistro(km = km, dataHora = dataText, quantidade = quantidadeText, dia = dia)
+        val novoRegistro = KmRegistro(
+            km = km,
+            dataHora = dataText,
+            localSaida = localSaidaText,
+            localChegada = localChegadaText,
+            dia = dia
+        )
 
         viewModel.adicionarRegistro(novoRegistro)
 
@@ -79,7 +85,6 @@ class SecondFragment : Fragment() {
 
         findNavController().navigateUp()
     }
-
 
     private fun showDatePicker() {
         val currentYear = calendar.get(Calendar.YEAR)

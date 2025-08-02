@@ -80,13 +80,16 @@ class KmAdapter(private var items: List<KmListItem>) :
     class KmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val txtKm: TextView = itemView.findViewById(R.id.txtKm)
         private val txtDataHora: TextView = itemView.findViewById(R.id.txtDataHora)
-        private val txtQuantidade: TextView = itemView.findViewById(R.id.txtQuantidade)
+        private val txtQuantidade: TextView = itemView.findViewById(R.id.txtLocal)
+
+        private val txtLocal: TextView = itemView.findViewById(R.id.txtLocal)
 
         fun bind(item: KmItem) {
             val registro = item.registro
             txtKm.text = "KM: ${registro.km}"
             txtDataHora.text = "Data: ${registro.dataHora}"
-            txtQuantidade.text = "Itinerário: ${registro.quantidade}"
+            txtLocal.text = "De: ${registro.localSaida} → Para: ${registro.localChegada}"
         }
+
     }
 }

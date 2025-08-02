@@ -8,19 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.km.databinding.FragmentKmListBinding
 
-// Importar as classes separadamente
-import com.example.km.DayHeader
-import com.example.km.KmItem
-
 class KmListFragment : Fragment() {
 
     private var _binding: FragmentKmListBinding? = null
     private val binding get() = _binding!!
 
+    // Agora usamos os novos campos localSaida e localChegada
     private val lista: List<KmRegistro> = listOf(
-        KmRegistro(km = 100, dataHora = "2025-07-25", quantidade = "2", dia = 1),
-        KmRegistro(km = 150, dataHora = "2025-07-26", quantidade = "5", dia = 2),
-        KmRegistro(km = 200, dataHora = "2025-07-27", quantidade = "3", dia = 3)
+        KmRegistro(km = 100, dataHora = "2025-07-25", localSaida = "Centro", localChegada = "Bairro A", dia = 1),
+        KmRegistro(km = 150, dataHora = "2025-07-26", localSaida = "Bairro B", localChegada = "Centro", dia = 2),
+        KmRegistro(km = 200, dataHora = "2025-07-27", localSaida = "Escritório", localChegada = "Casa", dia = 3)
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

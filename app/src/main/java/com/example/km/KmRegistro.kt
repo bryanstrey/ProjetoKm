@@ -10,11 +10,11 @@ data class KmRegistro(
     val id: Int = 0,
     val km: Int,
     val dataHora: String,
-    val quantidade: String,
+    val localSaida: String,
+    val localChegada: String,
     val dia: Int
 ) {
     @Ignore
-    constructor(km: Int, dataHora: String, quantidade: String, dia: Int) : this(0, km, dataHora, quantidade, dia)
+    constructor(km: Int, dataHora: String, localSaida: String, localChegada: String, dia: Int) :
+            this(0, km, dataHora, localSaida, localChegada, dia)
 }
-
-
