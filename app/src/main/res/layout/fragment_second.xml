@@ -13,12 +13,14 @@
         android:inputType="number"
         android:hint="KM" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/editTextDataHora"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Data e Hora"
-        android:inputType="text" />
+        android:focusable="false"
+        android:clickable="true"
+        android:hint="Selecione a data e hora" />
+
 
     <EditText
         android:id="@+id/editTextQuantidade"
