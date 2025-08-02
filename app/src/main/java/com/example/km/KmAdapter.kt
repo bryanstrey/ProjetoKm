@@ -86,7 +86,7 @@ class KmAdapter(private var items: List<KmListItem>) :
             val registro = item.registro
             txtKm.text = "KM: ${registro.km}"
             txtDataHora.text = "Data: ${registro.dataHora}"
-            txtQuantidade.text = "Qtd: ${registro.quantidade}"
+            txtQuantidade.text = "Itinerário: ${registro.quantidade}"
         }
     }
 }

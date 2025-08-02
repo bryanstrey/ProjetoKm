@@ -36,7 +36,7 @@
             android:id="@+id/txtQuantidade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Qtd: 5"
+            android:text="Itinerário: 5"
             android:textSize="14sp"
             android:textColor="#666" />
 
