@@ -41,21 +41,7 @@
         app:layout_constraintTop_toBottomOf="@id/titleKmList"
         app:layout_constraintStart_toEndOf="@id/spinnerDiaInicio"/>
 
-    <!-- Botão Filtrar -->
-
     <!-- TextView Data Início para filtro -->
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnFiltrarDias"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Filtrar"
-        android:textAllCaps="false"
-        app:layout_constraintStart_toEndOf="@id/spinnerDiaFim"
-        app:layout_constraintTop_toBottomOf="@id/titleKmList" />
-
     <TextView
         android:id="@+id/tvDataInicioFiltro"
         android:layout_width="wrap_content"
@@ -68,7 +54,7 @@
         android:textColor="@color/primaryColor"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/btnFiltrarDias"
+        app:layout_constraintTop_toBottomOf="@id/spinnerDiaInicio"
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- TextView Data Fim para filtro -->
@@ -84,8 +70,19 @@
         android:textColor="@color/primaryColor"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/btnFiltrarDias"
+        app:layout_constraintTop_toBottomOf="@id/spinnerDiaFim"
         app:layout_constraintStart_toEndOf="@id/tvDataInicioFiltro" />
+
+    <!-- Botão Filtrar (agora abaixo dos campos de data) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnFiltrarDias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Filtrar"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/tvDataFimFiltro"
+        app:layout_constraintStart_toStartOf="@id/spinnerDiaInicio" />
 
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
@@ -94,7 +91,7 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvDataInicioFiltro"
+        app:layout_constraintTop_toBottomOf="@id/btnFiltrarDias"
         app:layout_constraintBottom_toTopOf="@id/fabAddKm"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
