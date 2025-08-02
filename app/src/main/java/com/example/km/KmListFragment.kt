@@ -18,9 +18,9 @@ class KmListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val lista: List<KmRegistro> = listOf(
-        KmRegistro(km = 100, dataHora = "2025-07-25", quantidade = 2, dia = 1),
-        KmRegistro(km = 150, dataHora = "2025-07-26", quantidade = 5, dia = 2),
-        KmRegistro(km = 200, dataHora = "2025-07-27", quantidade = 3, dia = 3)
+        KmRegistro(km = 100, dataHora = "2025-07-25", quantidade = "2", dia = 1),
+        KmRegistro(km = 150, dataHora = "2025-07-26", quantidade = "5", dia = 2),
+        KmRegistro(km = 200, dataHora = "2025-07-27", quantidade = "3", dia = 3)
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

@@ -7,6 +7,13 @@
     android:padding="16dp">
 
     <EditText
+        android:id="@+id/editTextQuantidade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Itinerário" />
+
+    <EditText
         android:id="@+id/editTextKm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,14 +34,6 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:hint="Informe o dia (1 a 5)" />
-
-
-    <EditText
-        android:id="@+id/editTextQuantidade"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="Quantidade" />
 
     <Button
         android:id="@+id/buttonSave"

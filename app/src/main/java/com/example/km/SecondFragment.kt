@@ -58,11 +58,10 @@ class SecondFragment : Fragment() {
         }
 
         val km = kmText.toIntOrNull()
-        val quantidade = quantidadeText.toIntOrNull()
         val dia = diaText.toIntOrNull()
 
-        if (km == null || quantidade == null) {
-            Toast.makeText(context, "KM e Quantidade devem ser números válidos", Toast.LENGTH_SHORT).show()
+        if (km == null) {
+            Toast.makeText(context, "KM deve ser um número válido", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -71,7 +70,8 @@ class SecondFragment : Fragment() {
             return
         }
 
-        val novoRegistro = KmRegistro(km = km, dataHora = dataText, quantidade = quantidade, dia = dia)
+        // Aqui passamos quantidadeText direto, porque é String agora
+        val novoRegistro = KmRegistro(km = km, dataHora = dataText, quantidade = quantidadeText, dia = dia)
 
         viewModel.adicionarRegistro(novoRegistro)
 
@@ -79,6 +79,7 @@ class SecondFragment : Fragment() {
 
         findNavController().navigateUp()
     }
+
 
     private fun showDatePicker() {
         val currentYear = calendar.get(Calendar.YEAR)

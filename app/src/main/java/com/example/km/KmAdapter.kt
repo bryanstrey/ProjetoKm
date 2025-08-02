@@ -10,8 +10,9 @@ class KmAdapter(private var items: List<KmListItem>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        private const val VIEW_TYPE_HEADER = 0
-        private const val VIEW_TYPE_ITEM = 1
+        private const val VIEW_TYPE_TOTAL_KM = 0
+        private const val VIEW_TYPE_HEADER = 1
+        private const val VIEW_TYPE_ITEM = 2
     }
 
     fun updateData(newItems: List<KmListItem>) {
@@ -21,29 +22,49 @@ class KmAdapter(private var items: List<KmListItem>) :
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
+            is TotalKmItem -> VIEW_TYPE_TOTAL_KM
             is DayHeader -> VIEW_TYPE_HEADER
             is KmItem -> VIEW_TYPE_ITEM
+            // else não precisa porque é sealed interface e todos os casos cobertos
         }
     }
 
     override fun getItemCount(): Int = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == VIEW_TYPE_HEADER) {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_day_header, parent, false)
-            DayHeaderViewHolder(view)
-        } else {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_km_registro, parent, false)
-            KmViewHolder(view)
+        return when (viewType) {
+            VIEW_TYPE_TOTAL_KM -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_total_km, parent, false)
+                TotalKmViewHolder(view)
+            }
+            VIEW_TYPE_HEADER -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_day_header, parent, false)
+                DayHeaderViewHolder(view)
+            }
+            VIEW_TYPE_ITEM -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_km_registro, parent, false)
+                KmViewHolder(view)
+            }
+            else -> throw IllegalArgumentException("Tipo de view desconhecido")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = items[position]) {
+            is TotalKmItem -> (holder as TotalKmViewHolder).bind(item)
             is DayHeader -> (holder as DayHeaderViewHolder).bind(item)
             is KmItem -> (holder as KmViewHolder).bind(item)
+        }
+    }
+
+    // ViewHolder para o card total KM
+    class TotalKmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvTotalKm: TextView = itemView.findViewById(R.id.tvTotalKm)
+        fun bind(item: TotalKmItem) {
+            tvTotalKm.text = "Total KM: ${item.totalKm}"
         }
     }
 

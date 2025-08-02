@@ -1,18 +1,22 @@
 package com.example.km
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.km.databinding.FragmentKmListBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import androidx.navigation.fragment.findNavController
+import java.text.SimpleDateFormat
+import java.util.*
 
 class FirstFragment : Fragment() {
 
@@ -24,6 +28,13 @@ class FirstFragment : Fragment() {
     }
 
     private lateinit var adapter: KmAdapter
+
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    private var diaInicioSelecionado: Int? = null
+    private var diaFimSelecionado: Int? = null
+    private var dataInicioSelecionada: String? = null
+    private var dataFimSelecionada: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentKmListBinding.inflate(inflater, container, false)
@@ -37,55 +48,126 @@ class FirstFragment : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
 
+        // Configura spinners de dia
         val dias = (1..5).map { "Dia $it" }
         val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, dias)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerDiaInicio.adapter = spinnerAdapter
         binding.spinnerDiaFim.adapter = spinnerAdapter
 
-        // Exibe todos os registros inicialmente com agrupamento por dia
-        lifecycleScope.launch {
-            viewModel.registros.collectLatest { lista ->
-                val agrupados = agruparPorDia(lista)
-                adapter.updateData(agrupados)
+        // Inicializa seleções padrão
+        binding.spinnerDiaInicio.setSelection(0)
+        binding.spinnerDiaFim.setSelection(dias.size - 1)
+        diaInicioSelecionado = 1
+        diaFimSelecionado = 5
+
+        binding.spinnerDiaInicio.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                diaInicioSelecionado = position + 1
             }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
+        binding.spinnerDiaFim.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                diaFimSelecionado = position + 1
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        // DatePickers para data início e fim
+        binding.tvDataInicioFiltro.setOnClickListener {
+            showDatePicker(isDataInicio = true)
+        }
+
+        binding.tvDataFimFiltro.setOnClickListener {
+            showDatePicker(isDataInicio = false)
+        }
+
+        // Botão filtrar dias (aplica filtro por dias + intervalo de datas)
+        binding.btnFiltrarDias.setOnClickListener {
+            aplicarFiltros()
+        }
+
+        // Carrega todos dados inicialmente
+        carregarDadosSemFiltro()
+
+        // Botão para adicionar novo registro
         binding.fabAddKm.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
-
-        binding.btnFiltrarDias.setOnClickListener {
-            val diaInicio = binding.spinnerDiaInicio.selectedItem.toString().removePrefix("Dia ").toIntOrNull()
-            val diaFim = binding.spinnerDiaFim.selectedItem.toString().removePrefix("Dia ").toIntOrNull()
-
-            if (diaInicio == null || diaFim == null || diaInicio > diaFim) {
-                return@setOnClickListener
-            }
-
-            filtrarPorIntervaloDeDias(diaInicio, diaFim)
-        }
     }
 
-    private fun filtrarPorIntervaloDeDias(diaInicio: Int, diaFim: Int) {
+    private fun carregarDadosSemFiltro() {
         lifecycleScope.launch {
             viewModel.registros.collectLatest { lista ->
-                val filtrados = lista.filter { it.dia in diaInicio..diaFim }
-                val agrupados = agruparPorDia(filtrados)
-                adapter.updateData(agrupados)
+                val listaFormatada = formatarListaComHeaders(lista)
+                adapter.updateData(listaFormatada)
             }
         }
     }
 
-    private fun agruparPorDia(lista: List<KmRegistro>): List<KmListItem> {
-        return lista
-            .groupBy { it.dia }
-            .toSortedMap() // Ordena por dia
-            .flatMap { (dia, registros) ->
-                val header = DayHeader(dia)
-                val items = registros.map { KmItem(it) }
-                listOf<KmListItem>(header) + items
+    private fun aplicarFiltros() {
+        val diaInicio = diaInicioSelecionado ?: 1
+        val diaFim = diaFimSelecionado ?: 5
+
+        lifecycleScope.launch {
+            viewModel.registros.collectLatest { lista ->
+                var filtrados = lista.filter { it.dia in diaInicio..diaFim }
+
+                if (dataInicioSelecionada != null && dataFimSelecionada != null) {
+                    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val dataInicio = sdf.parse(dataInicioSelecionada!!)
+                    val dataFim = sdf.parse(dataFimSelecionada!!)
+
+                    filtrados = filtrados.filter {
+                        val dataRegistro = sdf.parse(it.dataHora)
+                        dataRegistro != null &&
+                                !dataRegistro.before(dataInicio) &&
+                                !dataRegistro.after(dataFim)
+                    }
+                }
+
+                val listaFormatada = formatarListaComHeaders(filtrados)
+                adapter.updateData(listaFormatada)
             }
+        }
+    }
+
+    private fun formatarListaComHeaders(lista: List<KmRegistro>): List<KmListItem> {
+        val totalKm = lista.sumOf { it.km }
+        val totalItem = TotalKmItem(totalKm)
+
+        return listOf(totalItem) + lista
+            .groupBy { it.dia }
+            .toSortedMap()
+            .flatMap { (dia: Int, registros: List<KmRegistro>) ->
+                listOf(DayHeader(dia)) + registros.map { KmItem(it) }
+            }
+    }
+
+
+    private fun showDatePicker(isDataInicio: Boolean) {
+        val calendar = Calendar.getInstance()
+
+        val datePickerDialog = DatePickerDialog(requireContext(),
+            { _, year, month, dayOfMonth ->
+                calendar.set(year, month, dayOfMonth)
+                val dataFormatada = dateFormat.format(calendar.time)
+                if (isDataInicio) {
+                    dataInicioSelecionada = dataFormatada
+                    binding.tvDataInicioFiltro.text = dataFormatada
+                } else {
+                    dataFimSelecionada = dataFormatada
+                    binding.tvDataFimFiltro.text = dataFormatada
+                }
+                aplicarFiltros()
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.show()
     }
 
     override fun onDestroyView() {
