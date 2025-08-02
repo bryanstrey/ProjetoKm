@@ -21,6 +21,13 @@
         android:clickable="true"
         android:hint="Selecione a data e hora" />
 
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/editTextDia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Informe o dia (1 a 5)" />
+
 
     <EditText
         android:id="@+id/editTextQuantidade"

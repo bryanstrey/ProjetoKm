@@ -36,38 +36,48 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Abre o DatePicker ao clicar no campo de data
+        // Abre DatePicker ao clicar no campo de data
         binding.editTextDataHora.setOnClickListener {
             showDatePicker()
         }
 
         binding.buttonSave.setOnClickListener {
-            val kmText = binding.editTextKm.text.toString()
-            val dataText = binding.editTextDataHora.text.toString()
-            val quantidadeText = binding.editTextQuantidade.text.toString()
-
-            if (kmText.isBlank() || dataText.isBlank() || quantidadeText.isBlank()) {
-                Toast.makeText(context, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val km = kmText.toIntOrNull()
-            val quantidade = quantidadeText.toIntOrNull()
-
-            if (km == null || quantidade == null) {
-                Toast.makeText(context, "KM e Quantidade devem ser números válidos", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // Salva somente a data no formato yyyy-MM-dd
-            val novoRegistro = KmRegistro(km = km, dataHora = dataText, quantidade = quantidade)
-
-            viewModel.adicionarRegistro(novoRegistro)
-
-            Toast.makeText(context, "Registro salvo", Toast.LENGTH_SHORT).show()
-
-            findNavController().navigateUp()
+            salvarRegistro()
         }
+    }
+
+    private fun salvarRegistro() {
+        val kmText = binding.editTextKm.text.toString()
+        val dataText = binding.editTextDataHora.text.toString()
+        val quantidadeText = binding.editTextQuantidade.text.toString()
+        val diaText = binding.editTextDia.text.toString()  // novo campo dia
+
+        if (kmText.isBlank() || dataText.isBlank() || quantidadeText.isBlank() || diaText.isBlank()) {
+            Toast.makeText(context, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val km = kmText.toIntOrNull()
+        val quantidade = quantidadeText.toIntOrNull()
+        val dia = diaText.toIntOrNull()
+
+        if (km == null || quantidade == null) {
+            Toast.makeText(context, "KM e Quantidade devem ser números válidos", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (dia == null || dia !in 1..5) {
+            Toast.makeText(context, "Informe um dia válido entre 1 e 5", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val novoRegistro = KmRegistro(km = km, dataHora = dataText, quantidade = quantidade, dia = dia)
+
+        viewModel.adicionarRegistro(novoRegistro)
+
+        Toast.makeText(context, "Registro salvo", Toast.LENGTH_SHORT).show()
+
+        findNavController().navigateUp()
     }
 
     private fun showDatePicker() {
@@ -80,7 +90,6 @@ class SecondFragment : Fragment() {
             calendar.set(Calendar.MONTH, month)
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            // Atualiza o campo com a data formatada
             binding.editTextDataHora.setText(dateFormat.format(calendar.time))
         }, currentYear, currentMonth, currentDay)
 

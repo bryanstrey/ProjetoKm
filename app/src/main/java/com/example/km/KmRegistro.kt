@@ -10,9 +10,11 @@ data class KmRegistro(
     val id: Int = 0,
     val km: Int,
     val dataHora: String,
-    val quantidade: Int
+    val quantidade: Int,
+    val dia: Int
 ) {
-    @Ignore // IGNORA esse construtor secundário para Room
-    constructor(km: Int, dataHora: String, quantidade: Int) : this(0, km, dataHora, quantidade)
+    @Ignore
+    constructor(km: Int, dataHora: String, quantidade: Int, dia: Int) : this(0, km, dataHora, quantidade, dia)
 }
+
 

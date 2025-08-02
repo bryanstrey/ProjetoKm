@@ -1,21 +1,18 @@
 package com.example.km
 
-import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.km.databinding.FragmentKmListBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import com.example.km.databinding.FragmentKmListBinding
-import java.text.SimpleDateFormat
-import java.util.*
+import androidx.navigation.fragment.findNavController
 
 class FirstFragment : Fragment() {
 
@@ -37,61 +34,59 @@ class FirstFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = KmAdapter(emptyList())
-        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
 
-        // Exibe todos os registros inicialmente
+        val dias = (1..5).map { "Dia $it" }
+        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, dias)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerDiaInicio.adapter = spinnerAdapter
+        binding.spinnerDiaFim.adapter = spinnerAdapter
+
+        // Exibe todos os registros inicialmente com agrupamento por dia
         lifecycleScope.launch {
             viewModel.registros.collectLatest { lista ->
-                adapter.updateData(lista)
+                val agrupados = agruparPorDia(lista)
+                adapter.updateData(agrupados)
             }
         }
 
-        // Botão flutuante para adicionar novo item
         binding.fabAddKm.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
 
-        // Botão de filtro por data
-        binding.btnFiltrarData.setOnClickListener {
-            showDatePickerDialog()
+        binding.btnFiltrarDias.setOnClickListener {
+            val diaInicio = binding.spinnerDiaInicio.selectedItem.toString().removePrefix("Dia ").toIntOrNull()
+            val diaFim = binding.spinnerDiaFim.selectedItem.toString().removePrefix("Dia ").toIntOrNull()
+
+            if (diaInicio == null || diaFim == null || diaInicio > diaFim) {
+                return@setOnClickListener
+            }
+
+            filtrarPorIntervaloDeDias(diaInicio, diaFim)
         }
     }
 
-    private fun showDatePickerDialog() {
-        val calendar = Calendar.getInstance()
-
-        val datePicker = DatePickerDialog(requireContext(),
-            { _, year, month, dayOfMonth ->
-                val selectedDate = Calendar.getInstance().apply {
-                    set(year, month, dayOfMonth)
-                }
-                val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val dateString = format.format(selectedDate.time)
-
-                filtrarPorData(dateString)
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-
-        datePicker.show()
-    }
-
-    private fun filtrarPorData(dataSelecionada: String) {
+    private fun filtrarPorIntervaloDeDias(diaInicio: Int, diaFim: Int) {
         lifecycleScope.launch {
             viewModel.registros.collectLatest { lista ->
-                val filtrados = lista.filter {
-                    it.dataHora == dataSelecionada
-                }
-                adapter.updateData(filtrados)
+                val filtrados = lista.filter { it.dia in diaInicio..diaFim }
+                val agrupados = agruparPorDia(filtrados)
+                adapter.updateData(agrupados)
             }
         }
     }
 
-
-
+    private fun agruparPorDia(lista: List<KmRegistro>): List<KmListItem> {
+        return lista
+            .groupBy { it.dia }
+            .toSortedMap() // Ordena por dia
+            .flatMap { (dia, registros) ->
+                val header = DayHeader(dia)
+                val items = registros.map { KmItem(it) }
+                listOf<KmListItem>(header) + items
+            }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
