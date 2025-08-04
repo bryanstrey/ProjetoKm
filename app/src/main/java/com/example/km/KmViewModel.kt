@@ -14,4 +14,18 @@ class KmViewModel(private val repository: KmRepository) : ViewModel() {
             repository.adicionar(registro)
         }
     }
+
+    fun excluirRegistro(registro: KmRegistro) {
+        viewModelScope.launch {
+            repository.excluir(registro)
+        }
+    }
+
+    fun excluirRegistrosPorId(ids: List<Long>) {
+        viewModelScope.launch {
+            repository.excluirPorIds(ids)
+        }
+    }
+
+
 }

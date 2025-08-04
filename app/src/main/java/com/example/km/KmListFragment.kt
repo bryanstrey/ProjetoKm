@@ -13,8 +13,7 @@ class KmListFragment : Fragment() {
     private var _binding: FragmentKmListBinding? = null
     private val binding get() = _binding!!
 
-    // Agora usamos os novos campos localSaida e localChegada
-    private val lista: List<KmRegistro> = listOf(
+    private val lista: MutableList<KmRegistro> = mutableListOf(
         KmRegistro(km = 100, dataHora = "2025-07-25", localSaida = "Centro", localChegada = "Bairro A", dia = 1),
         KmRegistro(km = 150, dataHora = "2025-07-26", localSaida = "Bairro B", localChegada = "Centro", dia = 2),
         KmRegistro(km = 200, dataHora = "2025-07-27", localSaida = "Escritório", localChegada = "Casa", dia = 3)
@@ -28,6 +27,10 @@ class KmListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        atualizarLista()
+    }
+
+    private fun atualizarLista() {
         val agrupados: List<KmListItem> = lista
             .groupBy { it.dia }
             .toSortedMap()
@@ -37,7 +40,10 @@ class KmListFragment : Fragment() {
 
         binding.recyclerView.apply {
             layoutManager = GridLayoutManager(context, 2)
-            adapter = KmAdapter(agrupados)
+            adapter = KmAdapter(agrupados, onDeleteClick = { registro ->
+                lista.remove(registro)
+                atualizarLista()
+            })
         }
     }
 

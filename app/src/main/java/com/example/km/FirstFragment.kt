@@ -28,7 +28,6 @@ class FirstFragment : Fragment() {
     }
 
     private lateinit var adapter: KmAdapter
-
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     private var diaInicioSelecionado: Int? = null
@@ -44,22 +43,23 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = KmAdapter(emptyList())
+        adapter = KmAdapter(emptyList(), onDeleteClick = { registro ->
+            viewModel.excluirRegistro(registro)
+        })
+
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
 
-        // Dias da semana (segunda a sexta)
         val diasSemana = listOf("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira")
         val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, diasSemana)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerDiaInicio.adapter = spinnerAdapter
         binding.spinnerDiaFim.adapter = spinnerAdapter
 
-        // Inicializa seleções padrão
         binding.spinnerDiaInicio.setSelection(0)
         binding.spinnerDiaFim.setSelection(diasSemana.size - 1)
-        diaInicioSelecionado = 1 // Segunda-feira
-        diaFimSelecionado = 5    // Sexta-feira
+        diaInicioSelecionado = 1
+        diaFimSelecionado = 5
 
         binding.spinnerDiaInicio.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -93,7 +93,6 @@ class FirstFragment : Fragment() {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
     }
-
 
     private fun carregarDadosSemFiltro() {
         lifecycleScope.launch {
@@ -152,11 +151,8 @@ class FirstFragment : Fragment() {
             }
     }
 
-
-
     private fun showDatePicker(isDataInicio: Boolean) {
         val calendar = Calendar.getInstance()
-
         val datePickerDialog = DatePickerDialog(requireContext(),
             { _, year, month, dayOfMonth ->
                 calendar.set(year, month, dayOfMonth)

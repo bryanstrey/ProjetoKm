@@ -3,11 +3,14 @@ package com.example.km
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class KmAdapter(private var items: List<KmListItem>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class KmAdapter(
+    private var items: List<KmListItem>,
+    private val onDeleteClick: (KmRegistro) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val VIEW_TYPE_TOTAL_KM = 0
@@ -21,6 +24,8 @@ class KmAdapter(private var items: List<KmListItem>) :
         notifyDataSetChanged()
     }
 
+    override fun getItemCount(): Int = items.size
+
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
             is TotalKmItem -> VIEW_TYPE_TOTAL_KM
@@ -30,31 +35,26 @@ class KmAdapter(private var items: List<KmListItem>) :
         }
     }
 
-    override fun getItemCount(): Int = items.size
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             VIEW_TYPE_TOTAL_KM -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_total_km, parent, false)
+                val view = inflater.inflate(R.layout.item_total_km, parent, false)
                 TotalKmViewHolder(view)
             }
             VIEW_TYPE_HEADER -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_day_header, parent, false)
+                val view = inflater.inflate(R.layout.item_day_header, parent, false)
                 DayHeaderViewHolder(view)
             }
             VIEW_TYPE_HEADER_NOME -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_day_header_nome, parent, false)
+                val view = inflater.inflate(R.layout.item_day_header_nome, parent, false)
                 DayHeaderNomeViewHolder(view)
             }
             VIEW_TYPE_ITEM -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_km_registro, parent, false)
-                KmViewHolder(view)
+                val view = inflater.inflate(R.layout.item_km_registro, parent, false)
+                KmViewHolder(view, onDeleteClick)
             }
-            else -> throw IllegalArgumentException("Tipo de view desconhecido")
+            else -> throw IllegalArgumentException("View type desconhecido: $viewType")
         }
     }
 
@@ -69,6 +69,7 @@ class KmAdapter(private var items: List<KmListItem>) :
 
     class TotalKmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvTotalKm: TextView = itemView.findViewById(R.id.tvTotalKm)
+
         fun bind(item: TotalKmItem) {
             tvTotalKm.text = "Total KM: ${item.totalKm}"
         }
@@ -76,6 +77,7 @@ class KmAdapter(private var items: List<KmListItem>) :
 
     class DayHeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val txtDia: TextView = itemView.findViewById(R.id.txtDia)
+
         fun bind(header: DayHeader) {
             txtDia.text = "Dia ${header.dia}"
         }
@@ -83,21 +85,31 @@ class KmAdapter(private var items: List<KmListItem>) :
 
     class DayHeaderNomeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val txtNomeDia: TextView = itemView.findViewById(R.id.txtNomeDia)
+
         fun bind(header: DayHeaderNome) {
             txtNomeDia.text = header.nomeDia
         }
     }
 
-    class KmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class KmViewHolder(
+        itemView: View,
+        private val onDeleteClick: (KmRegistro) -> Unit
+    ) : RecyclerView.ViewHolder(itemView) {
+
         private val txtKm: TextView = itemView.findViewById(R.id.txtKm)
         private val txtDataHora: TextView = itemView.findViewById(R.id.txtDataHora)
         private val txtLocal: TextView = itemView.findViewById(R.id.txtLocal)
+        private val btnExcluir: ImageButton = itemView.findViewById(R.id.btnExcluir)
 
         fun bind(item: KmItem) {
             val registro = item.registro
             txtKm.text = "KM: ${registro.km}"
             txtDataHora.text = "Data: ${registro.dataHora}"
             txtLocal.text = "De: ${registro.localSaida} → Para: ${registro.localChegada}"
+
+            btnExcluir.setOnClickListener {
+                onDeleteClick(registro)
+            }
         }
     }
 }

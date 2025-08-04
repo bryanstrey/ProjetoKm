@@ -1,11 +1,10 @@
 package com.example.km
 
-import com.example.km.KmRegistro
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
-
 
 @Dao
 interface KmRegistroDao {
@@ -15,4 +14,11 @@ interface KmRegistroDao {
 
     @Insert
     suspend fun insert(kmRegistro: KmRegistro)
+
+    @Delete
+    suspend fun excluir(km: KmRegistro)
+
+    // Método para excluir múltiplos registros pelo ID
+    @Query("DELETE FROM km_registro WHERE id IN (:ids)")
+    suspend fun deleteByIds(ids: List<Long>)
 }
