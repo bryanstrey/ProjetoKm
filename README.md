@@ -1,1 +1,1 @@
-Projeto de um app para calculo e istagem de itinerários
+Projeto de um app para calculo e listagem de itinerários
