@@ -24,10 +24,18 @@ class SecondFragment : Fragment() {
     }
 
     private val calendar = Calendar.getInstance()
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
 
-    // Lista dos dias da semana
-    private val diasSemana = listOf("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira")
+
+    private val diasSemana = listOf(
+        "Segunda-feira",
+        "Terça-feira",
+        "Quarta-feira",
+        "Quinta-feira",
+        "Sexta-feira",
+        "Sábado",
+        "Domingo"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,19 +48,15 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Configura o adapter para o MaterialAutoCompleteTextView
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, diasSemana)
         binding.autoCompleteDiaSemana.setAdapter(adapter)
 
-        // Seleciona o primeiro dia por padrão (opcional)
         binding.autoCompleteDiaSemana.setText(diasSemana[0], false)
 
-        // Abre o dropdown quando clicar no campo
         binding.autoCompleteDiaSemana.setOnClickListener {
             binding.autoCompleteDiaSemana.showDropDown()
         }
 
-        // Abre DatePicker ao clicar no campo de data
         binding.editTextDataHora.setOnClickListener {
             showDatePicker()
         }
@@ -80,7 +84,6 @@ class SecondFragment : Fragment() {
             return
         }
 
-        // Obtem o índice do dia selecionado na lista (1 = Segunda-feira, ...)
         val dia = diasSemana.indexOf(diaSelecionado) + 1
         if (dia == 0) {
             Toast.makeText(context, "Informe um dia válido da semana", Toast.LENGTH_SHORT).show()
