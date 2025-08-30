@@ -28,7 +28,7 @@ class FirstFragment : Fragment() {
     }
 
     private lateinit var adapter: KmAdapter
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
 
     private var diaInicioSelecionado: Int? = null
     private var diaFimSelecionado: Int? = null
@@ -50,7 +50,16 @@ class FirstFragment : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
 
-        val diasSemana = listOf("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira")
+        val diasSemana = listOf(
+            "Segunda-feira",
+            "Terça-feira",
+            "Quarta-feira",
+            "Quinta-feira",
+            "Sexta-feira",
+            "Sábado",
+            "Domingo"
+        )
+
         val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, diasSemana)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerDiaInicio.adapter = spinnerAdapter
@@ -112,7 +121,7 @@ class FirstFragment : Fragment() {
                 var filtrados = lista.filter { it.dia in diaInicio..diaFim }
 
                 if (dataInicioSelecionada != null && dataFimSelecionada != null) {
-                    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
                     val dataInicio = sdf.parse(dataInicioSelecionada!!)
                     val dataFim = sdf.parse(dataFimSelecionada!!)
 
@@ -139,8 +148,11 @@ class FirstFragment : Fragment() {
             2 to "Terça-feira",
             3 to "Quarta-feira",
             4 to "Quinta-feira",
-            5 to "Sexta-feira"
+            5 to "Sexta-feira",
+            6 to "Sábado",
+            7 to "Domingo"
         )
+
 
         return listOf(totalItem) + lista
             .groupBy { it.dia }
